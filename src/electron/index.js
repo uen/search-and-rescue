@@ -29,31 +29,44 @@ serialPort.on("open", () => {
 });
 
 
+const OPCODES = {
+    "begin-autonomous" : 2,
+    "set-speeds" : 3
+}
+
+const sendZumoData = (opcode, data = "") => {
+    if(!OPCODES[opcode]) return console.error("Unknown opcode: ", opcode);
+
+    const frame = xbee.buildFrame({
+        type: XBee.constants.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST,
+        data: `${OPCODES[opcode]}${data}`
+    });
+
+    if(portOpen){
+        serialPort.write(frame, (err, res) => {
+            console.log("Sent frame: ", opcode)
+            if(err) console.error("Error transmitting frame: ", err);
+        })
+    }
+}
+
+
 // Websocket server and message handling
 const server = io.listen(3001)
 server.on("connection", (socket) => {
     console.log("someone co nnected electorn")
+
+    // Set motor speeds for manual control
     socket.on("set-motors", (data) => {
         const speeds = {}
         speeds.left = `${data.left}`.padStart(3, "0");
         speeds.right = `${data.right}`.padStart(3, "0");
 
-        const leftFrame = xbee.buildFrame({
-            type : XBee.constants.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST,
-            data : `${3}${speeds.left}${speeds.right}`
-        });
+        sendZumoData("set-speeds", `${speeds.left}${speeds.right}`)
+    });
 
-        const rightFrame = xbee.buildFrame({
-            type : XBee.constants.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST,
-            data : `${0x02}${speeds.right}`
-        });
-
-        if(portOpen){
-            serialPort.write(leftFrame, (err, res) => {
-                console.log("writing frame..")
-                if(err) return console.log(err);
-            });
-        }
+    socket.on("begin-autonomous", (data) => {
+        sendZumoData("begin-autonomous")
     })
 })
 

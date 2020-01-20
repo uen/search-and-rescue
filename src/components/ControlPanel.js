@@ -25,7 +25,6 @@ class ControlPanel extends Component{
     }
 
     setMotorSpeeds(speeds){
-
         socket.emit("set-motors", {left : Math.floor(speeds.left * speed), right : Math.floor(speeds.right * speed)})
     }
 

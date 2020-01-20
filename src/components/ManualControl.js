@@ -1,7 +1,18 @@
 import React, {Component} from "react";
-import ControlButton from "./ControlButton"
+import ControlButton from "./ControlButton";
+import {socket} from "../services/zumo";
 
 class ManualControl extends Component{
+    constructor(props){
+        super(props);
+
+        this.beginAutonomous = this.beginAutonomous.bind(this);
+    }
+
+    beginAutonomous(){
+        socket.emit("begin-autonomous")
+    }
+
     render(){
         const {style} = this.props;
 
@@ -30,6 +41,7 @@ class ManualControl extends Component{
                 </div>
 
                 <div className="control-buttons">
+                    <ControlButton label="Begin Autonomous mode" procedure onClick={this.beginAutonomous}/>
                     {/* <ControlButton label="Calibrate line sensor" procedure/> */}
                 </div>
             </div>
