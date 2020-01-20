@@ -1,38 +1,45 @@
-.App {
+body {
+  text-align: left;
+}
+
+.main-container{
+  background:#001861;
+}
+
+.control-buttons .control-button > div {
+  background-color:#0645FF;
+  transition: background-color 200ms ease;
+  cursor: pointer;
+  color:#fff;
+  border-radius: 1000px;
   text-align: center;
+  width: 100px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.control-buttons .control-button.is-control > div {
+  background-color: #0645FF;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.control-buttons .control-button.is-control:hover > div {
+  background-color: #0537CC;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.control-buttons .control-button.is-danger > div{
+  background-color: #f00f00;
 }
 
-.App-link {
-  color: #61dafb;
+.control-buttons .control-button.is-danger:hover > div{
+  background-color: #cc0d00;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.control-buttons .control-button.is-procedure > div{
+  background-color: #fff;
+  color: #000;
+  width: 200px;
+}
+
+.control-buttons .control-button.is-room > div{
+  background-color: #fcff37;
+  color: #000;
+  width: 200px;
 }
