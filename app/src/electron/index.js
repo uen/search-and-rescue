@@ -13,6 +13,16 @@ const serialPort = new SerialPort("/dev/ttyUSB0", {
 });
 
 
+const zumoCommandHandlers = {
+    "state": (message) => {
+        server.sockets.emit("state-update", message);
+    },
+    "zumo": (message) => {
+        console.log("sneding to client:", message)
+        server.sockets.emit("zumo-log", message);
+    }
+}
+
 let portOpen = false;
 serialPort.on("open", () => {
     portOpen = true;
@@ -20,18 +30,38 @@ serialPort.on("open", () => {
     console.log("Serial port open");
 
     
+    let dataBuffer = "";
+    serialPort.on('data', (data) => {
+        data = data.toString();
+               console.log(data, Buffer.from(data, 'utf8').toString('hex'));
 
-    serialPort.on('data', function(data){
+        for(let i = 0; i < data.length; i++){
+            if(data[i] == "\n"){
 
-   
-        console.log("got data:" , data);
+                console.log("FULL COMMAND:", data, dataBuffer, dataBuffer.substring(0, dataBuffer.length - 1));
+                const [command, message] = dataBuffer.split(":")
+                
+                if(!zumoCommandHandlers[command]) return console.log("Zumo sent unknown command:", `"${command}"`);
+                zumoCommandHandlers[command](message)
+
+                dataBuffer = "";
+                break;
+            }
+
+            console.log("Added ", data[i], "to dataBuffer")
+            dataBuffer += data[i];
+        }
     });
 });
 
 
 const OPCODES = {
+    "zumo-stop": 1,
     "begin-autonomous" : 2,
-    "set-speeds" : 3
+    "set-speeds" : 3,
+    "calibrate-line-sensors" : 4,
+    "zumo-turn" : 5,
+    "search-room" : 6
 }
 
 const sendZumoData = (opcode, data = "") => {
@@ -62,11 +92,36 @@ server.on("connection", (socket) => {
         speeds.left = `${data.left}`.padStart(3, "0");
         speeds.right = `${data.right}`.padStart(3, "0");
 
-        sendZumoData("set-speeds", `${speeds.left}${speeds.right}`)
+        sendZumoData("set-speeds", `${speeds.left}${speeds.right}`);
     });
 
     socket.on("begin-autonomous", (data) => {
-        sendZumoData("begin-autonomous")
+        sendZumoData("begin-autonomous");
+    });
+
+    socket.on("calibrate-line-sensors", () => {
+        sendZumoData("calibrate-line-sensors");
+    });
+
+    socket.on("zumo-stop", () => {
+        console.log("sending zumo stop")
+        sendZumoData("zumo-stop"); 
+    });
+
+    socket.on("zumo-turn", (data) => {
+        console.log("turning: ", data);
+        sendZumoData("zumo-turn", data.direction);
+    });
+
+    socket.on("search-room", (data) => {
+        sendZumoData("search-room", data.direction)
     })
+
+    socket.on("zumo-reset", () => {
+        // TODO: Send stop command
+        console.log("consoel log treset")
+        socket.emit("reset-log")
+        socket.emit("state-update", "Idle");
+    });
 })
 

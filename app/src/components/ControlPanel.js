@@ -1,6 +1,8 @@
 import React, {Component} from "react";
+import {socket} from "../services/zumo";
+
 import ManualControl from "./ManualControl"
-import {socket} from "../services/zumo"
+import StateBar from "./StateBar"
 
 
 // move to aprameters
@@ -31,6 +33,7 @@ class ControlPanel extends Component{
     handleKeyDown(e){
         const {motors} = this.state;
         if(this.keys[e.key]) return;
+        if(["w", "a", "s", "d"].indexOf(e.key) === -1) return;
         this.keys[e.key] = true
 
         switch(e.key){
@@ -60,7 +63,9 @@ class ControlPanel extends Component{
 
     handleKeyUp(e){
         const {motors} = this.state;
+        if(["w", "a", "s", "d"].indexOf(e.key) === -1) return;
         delete this.keys[e.key];
+
 
         switch(e.key){
             case "w":
@@ -103,6 +108,7 @@ class ControlPanel extends Component{
         return (
 
             <div style={{...style, ...styles.container}}>
+                <StateBar />
                 <ManualControl/>
             </div>
 

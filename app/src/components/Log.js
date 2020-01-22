@@ -1,13 +1,33 @@
 import React, {Component} from "react";
+import {socket} from "../services/zumo";
 
 
+const defaultLog = "Search and Rescue initialized."
 class Log extends Component{
+    constructor(props){
+        super(props);
+
+        this.state = {
+            log : [defaultLog] 
+        }
+    }
+
+    componentDidMount(){
+        const {log} = this.state;
+        socket.on("zumo-log", (message) => {
+            console.log("socket log here", message)
+            log.push(message);
+            this.setState({log})
+        });
+
+        socket.on("reset-log", (message) => {
+            this.setState({log: [defaultLog + "alwdaoa"]});
+        })
+    }
+
     render(){
         const {style} = this.props;
-        console.log(this.props)
-
-        console.log(style)
-        const log = ["Initialized", "Running automous search and destroy protocol", "Detected object in room 4","Running automous search and destroy protocol", "Detected object in room 4","Running automous search and destroy protocol", "Detected object in room 4","Running automous search and destroy protocol", "Detected object in room 4","Running automous search and destroy protocol", "Detected object in room 4"]
+        const {log} = this.state;
 
         return (
             <div style={{...styles.container, ...style}}>
@@ -28,6 +48,7 @@ const styles = {
     container : {
         backgroundColor: "#00144e",
         minHeight: "100vh",
+        overflowY: "auto",
         textAlign: "left",
     },
     log : {
