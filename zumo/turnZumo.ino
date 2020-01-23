@@ -1,9 +1,9 @@
 #include <Arduino.h>
 #include <Zumo32U4.h>
 
-
+// t junction
 #define TURN_SPEED 200
-void turnZumo(int degrees){    
+void turnZumo(int degrees){
     int directionModifier = -1;
     if(degrees < 0){
         directionModifier = 1;
@@ -14,14 +14,14 @@ void turnZumo(int degrees){
     turnSensorReset();
 
 
-// TODO FIX BAD CODE 
+    // TODO FIX BAD CODE 
     if(degrees <= 0){
         int angle = 0;
         do {
             delay(1);
             turnSensorUpdate();
             angle = (((int32_t)turnAngle >> 16) * 360) >> 16;
-        } while(angle > (degrees));
+        } while(angle <= degrees);
     }
 
 
@@ -31,7 +31,7 @@ void turnZumo(int degrees){
             delay(1);
             turnSensorUpdate();
             angle = (((int32_t)turnAngle >> 16) * 360) >> 16;
-        } while(angle <= (degrees));
+        } while(angle > (degrees));
     }
 
     motors.setSpeeds(0, 0);

@@ -38,11 +38,9 @@ serialPort.on("open", () => {
         for(let i = 0; i < data.length; i++){
             if(data[i] == "\n"){
 
-                console.log("FULL COMMAND:", data, dataBuffer, dataBuffer.substring(0, dataBuffer.length - 1));
                 const [command, message] = dataBuffer.split(":")
-                
-                if(!zumoCommandHandlers[command]) return console.log("Zumo sent unknown command:", `"${command}"`);
-                zumoCommandHandlers[command](message)
+                if(!zumoCommandHandlers[command]) console.log("Zumo sent unknown command:", `"${command}"`);
+                zumoCommandHandlers["zumo"](dataBuffer)
 
                 dataBuffer = "";
                 break;

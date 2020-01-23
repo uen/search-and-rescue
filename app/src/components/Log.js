@@ -16,7 +16,7 @@ class Log extends Component{
         const {log} = this.state;
         socket.on("zumo-log", (message) => {
             console.log("socket log here", message)
-            log.push(message);
+            log.unshift(message);
             this.setState({log})
         });
 
@@ -48,6 +48,7 @@ const styles = {
     container : {
         backgroundColor: "#00144e",
         minHeight: "100vh",
+        maxHeight: "100vh",
         overflowY: "auto",
         textAlign: "left",
     },

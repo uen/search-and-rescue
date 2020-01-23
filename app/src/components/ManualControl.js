@@ -51,16 +51,39 @@ class ManualControl extends Component{
                         <ControlButton label="Stop" danger onClick={this.stopZumo}/>
                     </div>
                 </div>
-                <div className="control-buttons" style={styles.roomControl}>
-                    <ControlButton label="Search room (left)" room/>
-                    <ControlButton label="Search room (right)" onClick={() => this.searchRoom("R")}/>
+
+
+                <div style={styles.sectionText}>
+                        Task 5 (Rooms)
+                    </div>       
+
+                <div className="control-buttons" style={styles.section}>
+                    <ControlButton label="Search room (left)" room onClick={() => this.searchRoom("L")}/>
+                    <ControlButton label="Search room (right)" room onClick={() => this.searchRoom("R")}/>
                 </div>
 
-                <div className="control-buttons">
+                <div style={styles.sectionText}>
+                    Procedures
+                </div>
+
+                <div className="control-buttons" style={styles.section}>
                     <ControlButton label="Calibrate line sensors" procedure onClick={this.calibrateLineSensors}/>
                     <ControlButton label="Begin Autonomous mode" procedure onClick={this.beginAutonomous}/>
 
                 </div>
+
+                <div class="section">
+                    <div style={styles.sectionText}>
+                        Task 6 (T-Junctions)
+                    </div>                
+                </div>
+
+                <div className="control-buttons" style={styles.section}>
+                    <ControlButton label="Record" procedure onClick={this.calibrateLineSensors}/>
+                    <ControlButton label="Stop Recording and return home (and then do not add recording to the final list of commands)" procedure onClick={this.beginAutonomous}/>
+
+                </div>
+
             </div>
 
         )
@@ -80,6 +103,17 @@ const styles = {
         textAlign: "center",
         marginTop: 30,
         marginBottom: 30
+    },
+    section : {
+        textAlign: "center",
+        marginTop: 8,
+        marginBottom: 30  
+    },
+    sectionText : {
+        fontSize: 18,
+        color: "#ffffff",
+        marginTop: 30,
+        textAlign: "center"
     }
 }
 

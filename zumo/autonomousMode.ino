@@ -8,7 +8,7 @@
 #define TURN_MODIFIER 200
 void autonomousMode(){
     Serial1.println("zumo:Autonomous mode activated...#");
-    delay(100);
+    delay(250);
     Serial1.println("state:Autonomous...#");
 
     // Set LED to yellow to indicate we are in autonomous mode
@@ -18,8 +18,15 @@ void autonomousMode(){
     unsigned int sensors[6];
     int offset_from_center;
     int power_difference;
+
+
+    int distance = 0;
+    // reset the encoders
+    encoders.getCountsAndResetLeft();
     
     while(1){
+        distance += encoders.getCountsAndResetLeft();
+        
         reflectanceSensors.readLine(sensors);
         if(sensors[1] > FRONT_SENSOR_THRESHOLD){
             motors.setSpeeds(0,0);
@@ -37,8 +44,14 @@ void autonomousMode(){
             motors.setSpeeds(SPEED, SPEED);
         }
 
+        // ();
+
         if(handleCommunication()) return;
     }
+    
+    // once done, call the encoder read distance thing.
+    
+    recordMovement(distance);
 
     digitalWrite(13, LOW);
 

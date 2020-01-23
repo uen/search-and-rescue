@@ -15,9 +15,9 @@ void lineSensorCalibration(){
 
     // Start motors to run over lines
     // motors.setSpeeds(-100, 100);
-    motors.setSpeeds(-300, 300);
+    motors.setSpeeds(-200, 200);
 
-    // Calibrate for the next 7 seconds
+    // Calibrate for the next 5 seconds
     unsigned long startTime = millis();
 	while(millis() - startTime < 5000) {
 		reflectanceSensors.calibrate();

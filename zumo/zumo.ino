@@ -26,6 +26,8 @@ L3G gyro;
 Zumo32U4LCD lcd;
 Zumo32U4Encoders encoders;
 
+Zumo32U4ProximitySensors proximity;
+
 
 
 
@@ -44,15 +46,20 @@ void setup() {
 	turnSensorSetup();
 
 	Serial.println("Initialized...");
-	Serial1.println("zumo:Initialized.");
-	delay(100);
-	Serial1.println("state:Idle");
 
 	// Yellow LED
 	pinMode(13, OUTPUT);
 
 	// Initialize line sensors
 	reflectanceSensors.initThreeSensors();
+
+	proximity.initFrontSensor();
+
+	Serial1.println("zumo:Initialized.");
+	delay(100);
+	Serial1.println("state:Idle");
+
+
 
     
 
