@@ -18,14 +18,18 @@
 #define CALIBRATION 0x34 // Calibrate line sensors
 #define TURN 0x35
 #define SEARCH_ROOM 0x36
+#define START_RECORD 0x37
+#define STOP_RECORD 0x38
+#define RETURN_HOME 0x39
+
 
 #define SERIAL_DELAY 10
 
 
 L3G gyro;
 Zumo32U4LCD lcd;
+Zumo32U4Buzzer buzzer;
 Zumo32U4Encoders encoders;
-
 Zumo32U4ProximitySensors proximity;
 
 
@@ -83,6 +87,12 @@ void handleData(char commandByte, int len, String data){
 			 turnZumo(len, data);
 		 } else if(commandByte == SEARCH_ROOM){
 			 searchRoom(len, data);
+		 } else if(commandByte == START_RECORD){
+			 startRecording(len, data);
+		 } else if(commandByte == STOP_RECORD){
+			 stopRecording();
+		 } else if(commandByte == RETURN_HOME){
+			 returnHome();
 		 }
 
 		 else if(commandByte == STOP){

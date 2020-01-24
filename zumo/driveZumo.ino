@@ -13,9 +13,10 @@ void driveZumo(int cm){
     encoders.getCountsAndResetLeft();
 
     while(1){
-        totalDistance =+ encoders.getCountsAndResetLeft();
-        delay(250);
-        Serial1.println(String("zumo:total distance travelled is: ") + String(totalDistance));
+        totalDistance += encoders.getCountsAndResetLeft();
+        // Serial1.println(String("zumo:total distance travelled is: ") + String(totalDistance));
+        // Serial1.println(String("zumo:total distance travelled is: ") + String(totalDistance) + String("cause we added") + String);
+
         motors.setSpeeds(DRIVE_SPEED * directionModifier, DRIVE_SPEED * directionModifier);
             /*
                 total distance has to be less than distance to travel amount

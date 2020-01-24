@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <Zumo32U4.h>
 
-Zumo32U4Buzzer buzzer;
 void lineSensorCalibration(){
     Serial1.println("zumo:Beginning calibration...#");
     delay(100);

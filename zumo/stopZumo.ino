@@ -4,11 +4,10 @@
 void stopZumo(){
     digitalWrite(13, LOW);
     motors.setSpeeds(0, 0);
-    delay(100);
-    driveZumo(50);
+    // driveZumo(300);
 
-    delay(4000);
-    getPathHome();
+    // delay(4000);
+    // driveZumo(-300);
     
     // Serial1.println("state:Idle#");
     // delay(100);

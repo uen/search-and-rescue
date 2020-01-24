@@ -13,15 +13,15 @@ class Log extends Component{
     }
 
     componentDidMount(){
-        const {log} = this.state;
         socket.on("zumo-log", (message) => {
+            const {log} = this.state;
             console.log("socket log here", message)
             log.unshift(message);
             this.setState({log})
         });
 
         socket.on("reset-log", (message) => {
-            this.setState({log: [defaultLog + "alwdaoa"]});
+            this.setState({log: [defaultLog]});
         })
     }
 

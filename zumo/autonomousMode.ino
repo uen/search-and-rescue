@@ -6,10 +6,18 @@
 #define FRONT_SENSOR_THRESHOLD 150
 #define SPEED 100
 #define TURN_MODIFIER 200
+
 void autonomousMode(){
-    Serial1.println("zumo:Autonomous mode activated...#");
-    delay(250);
-    Serial1.println("state:Autonomous...#");
+    return autonomousMode(0);
+}
+
+void autonomousMode(bool dontRecord){
+    autonomousMode(0, dontRecord);
+}
+
+void autonomousMode(int distance, bool dontRecord){
+    delay(500);
+    Serial1.println(String(String("zumo:Autonomous mode activated... with distance ") + String(distance)));
 
     // Set LED to yellow to indicate we are in autonomous mode
     digitalWrite(13, HIGH);
@@ -20,20 +28,44 @@ void autonomousMode(){
     int power_difference;
 
 
-    int distance = 0;
+    int totalDistance = 0;
     // reset the encoders
     encoders.getCountsAndResetLeft();
     
     while(1){
-        distance += encoders.getCountsAndResetLeft();
+        int currentDistance = encoders.getCountsAndResetLeft();
+        totalDistance += currentDistance;
+
+        if(distance > 0 && totalDistance >= distance){
+            motors.setSpeeds(0,0);
+            delay(500);
+            return;
+        }
+        // delay(100);
+        // Serial1.println(String("zumo:Total distance so far is ") + String(totalDistance) + String(" as we moved ") + String(currentDistance));
+            
+
+        if(encoders.checkErrorLeft() || encoders.checkErrorRight()){
+            Serial1.println("zumo:Encoder error detected");
+            motors.setSpeeds(0,0);
+            buzzer.play(">g32>>g32>>g32>");
+
+
+        // An error occurred on the left encoder channel.
+        // Display it on the LCD for the next 10 iterations and
+        // also beep.
         
+            return;
+        }
+
+
+
         reflectanceSensors.readLine(sensors);
         if(sensors[1] > FRONT_SENSOR_THRESHOLD){
             motors.setSpeeds(0,0);
-            Serial1.println("zumo:Hit a wall. Please indicate direction#");
+            Serial1.println("zumo:Hit a wall. Please indicate direction. NEXT MESSAGE SHOULD BE DISTANCE");
             delay(100);
 
-            Serial1.println("state:Stopped");
 
             break;
         } else if(sensors[0] > SENSOR_THRESHOLD){
@@ -46,12 +78,13 @@ void autonomousMode(){
 
         // ();
 
-        if(handleCommunication()) return;
+        if(handleCommunication()) break;
     }
     
     // once done, call the encoder read distance thing.
+    delay(100);
     
-    recordMovement(distance);
+    if(!dontRecord) recordMovement(totalDistance);
 
     digitalWrite(13, LOW);
 

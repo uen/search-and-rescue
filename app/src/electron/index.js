@@ -33,7 +33,6 @@ serialPort.on("open", () => {
     let dataBuffer = "";
     serialPort.on('data', (data) => {
         data = data.toString();
-               console.log(data, Buffer.from(data, 'utf8').toString('hex'));
 
         for(let i = 0; i < data.length; i++){
             if(data[i] == "\n"){
@@ -46,7 +45,6 @@ serialPort.on("open", () => {
                 break;
             }
 
-            console.log("Added ", data[i], "to dataBuffer")
             dataBuffer += data[i];
         }
     });
@@ -59,7 +57,10 @@ const OPCODES = {
     "set-speeds" : 3,
     "calibrate-line-sensors" : 4,
     "zumo-turn" : 5,
-    "search-room" : 6
+    "search-room" : 6,
+    "zumo-record-start": 7,
+    "zumo-record-stop": 8,
+    "return-home": 9
 }
 
 const sendZumoData = (opcode, data = "") => {
@@ -113,7 +114,21 @@ server.on("connection", (socket) => {
 
     socket.on("search-room", (data) => {
         sendZumoData("search-room", data.direction)
-    })
+    });
+
+    socket.on("zumo-record", (data) => {
+        console.log("zumo record is:", data);
+        sendZumoData("zumo-record-start", data.direction);
+    });
+
+    socket.on("zumo-stop-recording", () => {
+        sendZumoData("zumo-record-stop");
+    });
+    
+    socket.on("return-home", () => {
+        console.log("is retunring home now..");
+        sendZumoData("return-home");
+    });
 
     socket.on("zumo-reset", () => {
         // TODO: Send stop command
