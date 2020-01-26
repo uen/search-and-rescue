@@ -32,8 +32,13 @@ class ControlPanel extends Component{
 
     handleKeyDown(e){
         const {motors} = this.state;
+
+        if(e.key === "h"){
+            socket.emit("return-home");
+        }
+
         if(this.keys[e.key]) return;
-        if(["w", "a", "s", "d"].indexOf(e.key) === -1) return;
+        if(["w", "a", "s", "d", "h"].indexOf(e.key) === -1) return;
         this.keys[e.key] = true
 
         switch(e.key){
@@ -51,7 +56,6 @@ class ControlPanel extends Component{
                 motors.right += turningSpeed;
                 break;
 
-            
             case "d":
                 motors.left += turningSpeed;
                 break;

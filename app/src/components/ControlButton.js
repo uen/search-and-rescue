@@ -3,7 +3,7 @@ import React, {Component} from "react";
 
 class ControlButton extends Component{
     render(){
-        const {label, secondary, danger, control, procedure, room, onClick, style} = this.props;
+        const {label, secondary, danger, success, control, procedure, room, onClick, style} = this.props;
 
         return (
             <a 
@@ -11,6 +11,7 @@ class ControlButton extends Component{
                     control-button
                     ${room ? "is-room" : ""}
                     ${procedure ? "is-procedure" : ""}
+                    ${success ? "is-success" : ""}
                     ${control ? "is-control" : ""}
                     ${danger ? "is-danger" : ""}
                 `}

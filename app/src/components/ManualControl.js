@@ -71,12 +71,25 @@ class ManualControl extends Component{
 
 
                 <div style={styles.sectionText}>
-                        Task 5 (Rooms)
-                    </div>       
+                       Rooms
+                </div>       
 
                 <div className="control-buttons" style={styles.section}>
                     <ControlButton label="Search room (left)" control room onClick={() => this.searchRoom("L")}/>
                     <ControlButton label="Search room (right)" control room onClick={() => this.searchRoom("R")}/>
+                </div>
+
+                <div class="section">
+                    <div style={styles.sectionText}>
+                        T-Junctions
+                    </div>                
+                </div>
+
+                <div className="control-buttons" style={styles.section}>
+                    <ControlButton label="Search T-Junction Left"  control procedure onClick={() => this.record("L")}/>
+                    <ControlButton label="Search T-Junction Right" control procedure onClick={() => this.record("R")}/>
+
+                    <ControlButton label="Search other side" control procedure onClick={this.stopRecording}/>
                 </div>
 
                 <div style={styles.sectionText}>
@@ -86,23 +99,10 @@ class ManualControl extends Component{
                 <div className="control-buttons" style={styles.section}>
                     <ControlButton label="Calibrate line sensors" procedure onClick={this.calibrateLineSensors}/>
                     <ControlButton label="Begin Autonomous mode" procedure onClick={this.beginAutonomous}/>
-                    <ControlButton label="Return home" procedure onClick={this.returnHome}/>
+                    <ControlButton label="Return home" procedure success onClick={this.returnHome}/>
 
                 </div>
 
-                <div class="section">
-                    <div style={styles.sectionText}>
-                        Task 6 (T-Junctions)
-                    </div>                
-                </div>
-
-                <div className="control-buttons" style={styles.section}>
-                    <ControlButton label="Search T-Junction Left"  control procedure onClick={() => this.record("L")}/>
-                    <ControlButton label="Search T-Junction Right" control procedure onClick={() => this.record("R")}/>
-
-                    <ControlButton label="Search other side" procedure onClick={this.stopRecording}/>
-
-                </div>
 
             </div>
 

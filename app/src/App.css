@@ -40,6 +40,17 @@ body {
   background-color: #cc0d00;
 }
 
+
+.control-button.is-success > div{
+  background-color: #09a93f;
+  color: #fff;
+}
+
+.control-button.is-success:hover > div{
+  background-color: #009633;
+}
+
+
 .control-button.is-procedure > div{
   width: 200px;
 }
