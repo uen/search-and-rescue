@@ -9,11 +9,19 @@ struct Step {
 
 bool isRecording = false;
 
+
+
+Step pathRecord[20];
+int pathRecordLength = 0;
+
 void startRecording(int len, String data){
     String direction = data.substring(0, 1);
 
     if(direction == "R") turnZumo(-90);
     else turnZumo(90);
+
+    pathRecord[pathRecordLength - 1].value = pathRecord[pathRecordLength - 1].value * -1; // Invert the turn as we will be facing the other way.
+
 
     delay(100);
     isRecording = true;
@@ -35,9 +43,6 @@ int firstTJunctionLength = 0;
 
 
 
-Step pathRecord[10];
-int pathRecordLength = 0;
-
 int angleReturnTJunction = 0;
 
 bool isReturningHome = false;
@@ -46,41 +51,103 @@ bool isReturningHome = false;
 //     if(step.command == "MOVE")
 //         return step;
 // }
-
 void stopRecording(){
     Serial1.println("zumo: stop recording... turning round");
 
-    isReturningHome = true;
+
     turnZumo(90);
     turnZumo(90);
-    isReturningHome = false;
 
-    Serial1.println("zumo: has the array had any steps where they have found anyone in the room??");
-    // SEARCHROOM -1 IS LEFT 1 IS RIGHT 0 IS not
-    delay(100);
-    Serial1.println("zumo: lets assume not. Returning back to t junction. size of thing is - " + String(tJunctionLength));
+    // tJunctionLength++;
 
-    for(int i = tJunctionLength-1; i >= 0; i--){
-        if(tJunctionRecord[i].command == "MOVE"){
-            delay(500);
-            Serial1.println("Next command is MOVE. Moving units - " + String(tJunctionRecord[i].value));
-            autonomousMode(tJunctionRecord[i].value, true);
-        } else if(pathRecord[i].command == "TURN"){
-            Serial1.println("Next command is TURN. Turning units - " + String(-pathRecord[i].value));
-            turnZumo(-1 * pathRecord[i].value);
+    // TODO: IF SOMETHING IN ROOM
+    // OKAY SO REVERSE THE TURN DIRECTION AS IT WILL BE FACING THE OTHER WAY.
+    bool foundSomething = false;
+    for(int i = 0; i < tJunctionLength-1; i++){
+        if(tJunctionRecord[i].command == "ROOM"){
+            foundSomething = true;
+            break;
         }
     }
 
-    // If we found a person in the room, we can now add everything to the other array. - but this wont work :()
-
-    for(int i = 0; i > tJunctionLength - 1; i++){
-        if(tJunctionRecord[i].command == "TURN")
-            tJunctionRecord[i].value = tJunctionRecord[tJunctionLength + i].value * -1;
+    if(foundSomething){
+        Serial1.println("We found something so lets add it :)");
+        delay(500);
         
-        pathRecord[pathRecordLength + i] = tJunctionRecord[i];
+        // Invert the first turn as the zumo will be on thr other side
+        pathRecord[pathRecordLength-1].value = pathRecord[pathRecordLength-1].value * -1; 
+        
+    }
+    // Serial1.println("zumo: The path record last thing is-  (should be turn right) - " + String(pathRecord[pathRecordLength-1].command) + "with the value" + String(pathRecord[pathRecordLength-1].value));
+    delay(100);
+    // Serial1.println("zumo: first command for tjunction is "+String(tJunctionRecord[0].command)+" t junction length is:" + String(tJunctionLength));
+    // SEARCHROOM -1 IS LEFT 1 IS RIGHT 0 IS not
+    delay(100);
+
+
+    delay(500);
+
+    // Retrace out t junction move
+    for(int i = tJunctionLength-1; i >= 0; i--){
+        if(tJunctionRecord[i].command == "MOVE"){
+            delay(500);
+            Serial1.println("retracing t junction move. Next command is MOVE. Moving units - " + String(tJunctionRecord[i].value));
+            autonomousMode(tJunctionRecord[i].value, true);
+
+            // Record steps to go back to center after re-searching room.
+            if(foundSomething){
+                pathRecord[pathRecordLength] = Step{tJunctionRecord[i].command, tJunctionRecord[i].value};
+                pathRecordLength++;
+            }
+        }
+
     }
 
+    
+    Serial1.println("zumo: COMPLETED THE T JUNCTION STEPS. MOVING ONTO THE REGULAR PATH STEPS.");
+    // Add the steps we recorded to the main path record.
+    // TODO: ONLY DO THIS IF IT HAS A PERSON FOUND
+
+    // Add all move commands on the way back
+    // for(int i = tJunctionLength-1; i >= 0; i--){
+    //     if(tJunctionRecord[i].command == "MOVE"){
+    //         pathRecord[pathRecordLength] = Step{tJunctionRecord[i].command, tJunctionRecord[i].value};
+    //         pathRecordLength++;
+    //     }
+    // }
+
+
+    pathRecordLength++;
+    if(foundSomething){
+        for(int i = tJunctionLength-1; i >= 0; i--){
+            // if(tJunctionRecord[i].command == "TURN")
+                // tJunctionRecord[i].value = tJunctionRecord[tJunctionLength + i].value * -1;
+
+
+            delay(500);
+            int value = tJunctionRecord[i].value;
+            if(tJunctionRecord[i].command == "ROOM"){
+                value = value * -1;
+            }
+            
+            pathRecord[pathRecordLength] = Step{tJunctionRecord[i].command, value};
+            pathRecordLength++;
+
+            Serial1.println("zumo: Adding step to pathRecord from tJunctionRecord. " + String(tJunctionRecord[i].command) + "" + String(tJunctionRecord[i].value));
+        }
+    }
+
+    // pathRecord[pathRecordLength] = Step{tJunctionRecord[0].command, tJunctionRecord[0].value};
+
+    // doesnt come back after turning 90 degrees
+
+    // If we found a person in the room, we can now add everything to the other array. - but this wont work :()
+
+
+
     tJunctionLength = 0;
+
+    // We should be at the middle of the junction atm.
     autonomousMode();
 
 
@@ -126,9 +193,21 @@ void recordTurn(int degrees){
 
 }
 
+int roomCount = 0;
+bool shouldPlayReturnSong = false;
+
 void recordRoomSearch(int direction){
+
+    if(isReturningHome){
+        Serial1.println("zumo: Someone still present in room "+String(roomCount)+".");
+        shouldPlayReturnSong = true;
+        roomCount--;
+    } else {
+        roomCount++;
+        Serial1.println("zumo: Found someone in room "+String(roomCount));
+    }
+
     if(isReturningHome) return;
-    Serial1.println("zumo: FOund someone in the room. Recording it. Direction is "+ String(direction));
 
     Step step = {String("ROOM"), direction};
   
@@ -160,7 +239,7 @@ void returnHome(){
             searchRoom(tJunctionRecord[i].value * -1);
         }
         // driveZumo(pathRecord[i].distance);
-        delay(3000);
+        // delay(3000);
     }
 
 
@@ -176,7 +255,8 @@ void returnHome(){
             searchRoom(pathRecord[i].value * -1);
         }
         // driveZumo(pathRecord[i].distance);
-        delay(3000);
+        // delay(3000);
+        
     }
 
     buzzer.play(">g32>>c32");

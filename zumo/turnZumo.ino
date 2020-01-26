@@ -3,7 +3,7 @@
 
 // t junction
 #define DEGREE_MODIFIER 1 // Remove 10 degrees from the total degrees to turn. As the gyro is inaccurate
-#define TURN_SPEED 80
+#define TURN_SPEED 100
 
 void turnZumo(int degrees){
     turnZumo(degrees, false);

@@ -49,6 +49,7 @@ void autonomousMode(int distance, bool dontRecord){
             Serial1.println("zumo:Encoder error detected");
             motors.setSpeeds(0,0);
             buzzer.play(">g32>>g32>>g32>");
+            
 
 
         // An error occurred on the left encoder channel.
