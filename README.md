@@ -27,5 +27,13 @@ The user can press 'T Junction Left' or 'T Junction Right' to turn down a T junc
 #### Task 7
 Once the Zumo is at the end of the second half of the t junction, the user can press 'Return home'. The robot will then turn 180 degrees and search every room that it previously found someone in in reverse order. If it finds someone, it displays a message on the GUI, plays a tone and activates the LED. Then it returns to its original starting position autonomously.
 
+#### Extensions
+The Zumo returns to its original position ('home') completely autonomomously.
+
 #### Running
 Run npm run
+
+
+#### Other
+Github Repository - https://github.com/vrondakis/search-and-rescue
+Video - https://www.youtube.com/watch?v=L2vuAfGVpTY
