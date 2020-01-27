@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <Zumo32U4.h>
 
+// Calibrate the line sensors by spinning on the spot
 void lineSensorCalibration(){
     Serial1.println("Beginning calibration...");
     delay(100);

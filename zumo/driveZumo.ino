@@ -3,31 +3,30 @@
 
 #define DRIVE_SPEED 100
 
+// Drive Zumo a certain distance (used by rooms)
 void driveZumo(int cm){
+
     int totalDistance = 0;
+
+    // If the distance is negative, go backwards instead of forwards
     int directionModifier = 1;
     if(cm < 0){
         directionModifier = -1;
     }
 
+    // Reset encoders
     encoders.getCountsAndResetLeft();
 
     while(1){
         totalDistance += encoders.getCountsAndResetLeft();
-        // Serial1.println(String("zumo:total distance travelled is: ") + String(totalDistance));
-        // Serial1.println(String("zumo:total distance travelled is: ") + String(totalDistance) + String("cause we added") + String);
 
         motors.setSpeeds(DRIVE_SPEED * directionModifier, DRIVE_SPEED * directionModifier);
-            /*
-                total distance has to be less than distance to travel amount
-                to stop the zumo.
-             */
-            if (
-                (directionModifier == -1 && totalDistance < cm) ||
-                (directionModifier == 1 && totalDistance > cm)
-            ){
-                motors.setSpeeds(0, 0);
-                break;
+        
+        if ((directionModifier == -1 && totalDistance < cm) ||
+            (directionModifier == 1 && totalDistance > cm)){
+            // If we have gone past the total distance, stop the zumo
+            motors.setSpeeds(0, 0);
+            break;
         }
     }
     

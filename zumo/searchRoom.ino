@@ -6,6 +6,8 @@
 #define ROOM_SEARCH_DISTANCE 250
 #define ROOM_BACK_DISTANCE 220
 
+
+// Check if objects detected
 bool performScan(){
     proximity.read();
     uint8_t leftSensor = proximity.countsFrontWithLeftLeds();
@@ -14,36 +16,35 @@ bool performScan(){
 
     bool objectDetected = reading > 5;
 
-    // Serial1.println(String("zumo:") + String(objectDetected ? "OBJECT DETECTED": "OFF"));
-
     return objectDetected;
 }
 
+// Search room (from serial)
 void searchRoom(int len, String data){
     String direction = data.substring(0, 1);
     searchRoom(direction == "L" ? -1 : 1);
 }
 
+
 void searchRoom(int direction){
-    // performScan();
-
-
+    // Turn the right way
     int angleModifier = -1;
     if(direction == -1)
         angleModifier = 1;
 
+
     turnZumo(angleModifier * 90, true);
     delay(500);
+
+    // Drive forward into the room`
     driveZumo(ROOM_SEARCH_DISTANCE);
-    
-    
-    // no change for both directions
+
+    // Turn half of the total scan size    
     turnZumo(-SCAN_SIZE / 2, true);
     delay(100);
 
 
-    // Serial1.println("SEARCH ROOMSEARCH ROOM " + String(direction));
-
+    // Slowly turn the full scna size, scanning every time
     bool objectFound = false;
     for(int i=0; i < SCAN_SIZE; i = i + SCAN_SECTION){
         objectFound = performScan();
@@ -56,30 +57,23 @@ void searchRoom(int direction){
 
         delay(500);
         turnZumo(SCAN_SECTION, true); 
-        
     }
 
 
-
+    // If we found an object, turn the rest of the way immediately. Or turn back to middle
     turnZumo((-SCAN_SIZE / 2) - (objectFound ? 0 : SCAN_SECTION), true);
     delay(300);
+
+    // Drive out of the room
     driveZumo(-ROOM_BACK_DISTANCE);
 
     delay(300);
 
+    // Turn back to our original position
     turnZumo(angleModifier * -90, true);
 
+    // If we found something, record it.
     if(objectFound){
         recordRoomSearch(direction);
     }
-        // turnZumo(SCAN_SIZE);
-        // turnZumo(SCAN_SIZE);
-
-    
-
-
-
-              
-    // motors.setSpeeds(0, 0);
-
 }

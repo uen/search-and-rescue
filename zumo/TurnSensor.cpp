@@ -1,3 +1,7 @@
+//////
+//  TAKEN FROM https://github.com/pololu/romi-32u4-arduino-library/blob/master/examples/RotationResist/TurnSensor.cpp
+//////
+
 /* Turnsensor.h and TurnSensor.cpp provide functions for
 configuring the L3GD20H gyro, calibrating it, and using it to
 measure how much the robot has turned about its Z axis. */
