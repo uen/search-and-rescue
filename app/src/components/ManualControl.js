@@ -26,7 +26,7 @@ class ManualControl extends Component{
     }
 
     returnHome(){
-        console.log("reutning home..")
+        // console.log("reutning home..")
         socket.emit("return-home");
     }
 

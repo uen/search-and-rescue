@@ -16,7 +16,7 @@ class StateBar extends Component{
     }
 
     reset(){
-        console.log("zumo reset")
+        // console.log("zumo reset")
         socket.emit("zumo-reset")
     }
 

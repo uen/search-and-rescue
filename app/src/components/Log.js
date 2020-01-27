@@ -15,7 +15,7 @@ class Log extends Component{
     componentDidMount(){
         socket.on("zumo-log", (message) => {
             const {log} = this.state;
-            console.log("socket log here", message)
+            // console.log("socket log here", message)
             log.unshift(message);
             this.setState({log})
         });

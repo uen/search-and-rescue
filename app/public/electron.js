@@ -5,7 +5,7 @@ const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
 const isDev = require('electron-is-dev');
 
-console.log("electron: running electorn ws")
+// console.log("electron: running electorn ws")
 require('../src/electron')
 
 let mainWindow;

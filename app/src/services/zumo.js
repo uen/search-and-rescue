@@ -4,7 +4,7 @@ import env from "../config"
 const socketConnection = io(env.WS_URL)
 
 socketConnection.on("connect", () => {
-    console.log("connected")
+    // console.log("connected")
 })
 
 

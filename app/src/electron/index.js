@@ -18,7 +18,7 @@ const zumoCommandHandlers = {
         server.sockets.emit("state-update", message);
     },
     "zumo": (message) => {
-        console.log("sneding to client:", message)
+        // console.log("sneding to client:", message)
         server.sockets.emit("zumo-log", message);
     }
 }
@@ -27,7 +27,7 @@ let portOpen = false;
 serialPort.on("open", () => {
     portOpen = true;
 
-    console.log("Serial port open");
+    // console.log("Serial port open");
 
     
     let dataBuffer = "";
@@ -38,7 +38,7 @@ serialPort.on("open", () => {
             if(data[i] == "\n"){
 
                 const [command, message] = dataBuffer.split(":")
-                if(!zumoCommandHandlers[command]) console.log("Zumo sent unknown command:", `"${command}"`);
+                // if(!zumoCommandHandlers[command]) console.log("Zumo sent unknown command:", `"${command}"`);
                 zumoCommandHandlers["zumo"](dataBuffer)
 
                 dataBuffer = "";
@@ -73,7 +73,7 @@ const sendZumoData = (opcode, data = "") => {
 
     if(portOpen){
         serialPort.write(frame, (err, res) => {
-            console.log("Sent frame: ", opcode)
+            // console.log("Sent frame: ", opcode)
             if(err) console.error("Error transmitting frame: ", err);
         })
     }
@@ -83,7 +83,7 @@ const sendZumoData = (opcode, data = "") => {
 // Websocket server and message handling
 const server = io.listen(3001)
 server.on("connection", (socket) => {
-    console.log("someone co nnected electorn")
+    // console.log("someone co nnected electorn")
 
     // Set motor speeds for manual control
     socket.on("set-motors", (data) => {
@@ -103,12 +103,12 @@ server.on("connection", (socket) => {
     });
 
     socket.on("zumo-stop", () => {
-        console.log("sending zumo stop")
+        // console.log("sending zumo stop")
         sendZumoData("zumo-stop"); 
     });
 
     socket.on("zumo-turn", (data) => {
-        console.log("turning: ", data);
+        // console.log("turning: ", data);
         sendZumoData("zumo-turn", data.direction);
     });
 
@@ -117,7 +117,7 @@ server.on("connection", (socket) => {
     });
 
     socket.on("zumo-record", (data) => {
-        console.log("zumo record is:", data);
+        // console.log("zumo record is:", data);
         sendZumoData("zumo-record-start", data.direction);
     });
 
@@ -126,13 +126,13 @@ server.on("connection", (socket) => {
     });
     
     socket.on("return-home", () => {
-        console.log("is retunring home now..");
+        // console.log("is retunring home now..");
         sendZumoData("return-home");
     });
 
     socket.on("zumo-reset", () => {
         // TODO: Send stop command
-        console.log("consoel log treset")
+        // console.log("consoel log treset")
         socket.emit("reset-log")
         socket.emit("state-update", "Idle");
     });
