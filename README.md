@@ -1,5 +1,5 @@
 # Search and Rescue
-Programming 'things' assignment. A GUI and Zumo robot code to navigate cooridors and search rooms, and then return home anonymously. 
+Programming 'things' assignment. A GUI and Zumo robot code to navigate cooridors and search rooms, and then return home autonomously. 
 
 ---
 
