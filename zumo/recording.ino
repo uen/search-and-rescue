@@ -29,7 +29,7 @@ void startRecording(int len, String data){
      
 
     //haha:  autotonomousMode();
-    Serial1.println("zumo: Started recording. autonomous mode activated.");
+    // Serial1.println("zumo: Started recording. autonomous mode activated.");
     delay(500);
     
     // go into automous mode
@@ -52,9 +52,6 @@ bool isReturningHome = false;
 //         return step;
 // }
 void stopRecording(){
-    Serial1.println("zumo: stop recording... turning round");
-
-
     turnZumo(90);
     turnZumo(90);
 
@@ -71,7 +68,7 @@ void stopRecording(){
     }
 
     if(foundSomething){
-        Serial1.println("We found something so lets add it :)");
+        // Serial1.println("We found something so lets add it :)");
         delay(500);
         
         // Invert the first turn as the zumo will be on thr other side
@@ -91,7 +88,7 @@ void stopRecording(){
     for(int i = tJunctionLength-1; i >= 0; i--){
         if(tJunctionRecord[i].command == "MOVE"){
             delay(500);
-            Serial1.println("retracing t junction move. Next command is MOVE. Moving units - " + String(tJunctionRecord[i].value));
+            // Serial1.println("retracing t junction move. Next command is MOVE. Moving units - " + String(tJunctionRecord[i].value));
             autonomousMode(tJunctionRecord[i].value, true);
 
             // Record steps to go back to center after re-searching room.
@@ -104,7 +101,7 @@ void stopRecording(){
     }
 
     
-    Serial1.println("zumo: COMPLETED THE T JUNCTION STEPS. MOVING ONTO THE REGULAR PATH STEPS.");
+    // Serial1.println("zumo: COMPLETED THE T JUNCTION STEPS. MOVING ONTO THE REGULAR PATH STEPS.");
     // Add the steps we recorded to the main path record.
     // TODO: ONLY DO THIS IF IT HAS A PERSON FOUND
 
@@ -133,7 +130,7 @@ void stopRecording(){
             pathRecord[pathRecordLength] = Step{tJunctionRecord[i].command, value};
             pathRecordLength++;
 
-            Serial1.println("zumo: Adding step to pathRecord from tJunctionRecord. " + String(tJunctionRecord[i].command) + "" + String(tJunctionRecord[i].value));
+            // Serial1.println("zumo: Adding step to pathRecord from tJunctionRecord. " + String(tJunctionRecord[i].command) + "" + String(tJunctionRecord[i].value));
         }
     }
 
@@ -165,9 +162,8 @@ void stopRecording(){
 void recordMovement(int distance){
     if(isReturningHome) return;
     Step movement = {String("MOVE"), distance};
-    Serial.println("moved:");
-    Serial.println(distance);
-    Serial1.println(String(String("zumo: JUST MOVED ") + String((distance))));
+
+    Serial1.println(String(String("Recorded distance of ") + String((distance))));
     if(isRecording){
         tJunctionRecord[tJunctionLength] = movement; 
         tJunctionLength++;
@@ -179,7 +175,7 @@ void recordMovement(int distance){
 
 void recordTurn(int degrees){
     if(isReturningHome) return;
-    Serial1.println(String(String("zumo: JUST TURNED ") + String((degrees))));
+    // Serial1.println(String(String("zumo: JUST TURNED ") + String((degrees))));
 
     Step turn = {String("TURN"), degrees};
 
@@ -221,23 +217,40 @@ void recordRoomSearch(int direction){
 
 }
 
+
+void playReturnSound(){
+        if(shouldPlayReturnSong){
+            if(!buzzer.isPlaying()){
+                buzzer.play("!T240 L8 MS >e<eb>c>d>e16>d16>cba<aa>c>e<a>d>cb<g+b>c>d<e>e<e>c<aarae<bc d>d<d>f>ad16d16>g>f>e<cr>c>e<g>d>cb<g+b>c>d<e>e<e>c<aa<aa");
+            }
+        }
+}
+
 void returnHome(){
     isReturningHome = true;
     turnZumo(90);
     delay(1000);
     turnZumo(90);
     delay(1000);
+
+    digitalWrite(13, HIGH);
     for(int i = tJunctionLength-1; i >= 0; i--){
         if(tJunctionRecord[i].command == "MOVE"){
-            Serial1.println("Next command is MOVE. Moving units - " + String(pathRecord[i].value));
+            // Serial1.println("Next command is MOVE. Moving units - " + String(pathRecord[i].value));
             autonomousMode(tJunctionRecord[i].value,true);
         } else if(tJunctionRecord[i].command == "TURN"){
-            Serial1.println("Next command is TURN. Turning units - " + String(-pathRecord[i].value));
+            // Serial1.println("Next command is TURN. Turning units - " + String(-pathRecord[i].value));
             turnZumo(-tJunctionRecord[i].value);
         } else if(tJunctionRecord[i].command == "ROOM"){
-            Serial1.println("Next command is ROOM. Going into room");
+            // Serial1.println("Next command is ROOM. Going into room");
             searchRoom(tJunctionRecord[i].value * -1);
+            delay(500);
         }
+
+
+        playReturnSound();
+        delay(1000);
+
         // driveZumo(pathRecord[i].distance);
         // delay(3000);
     }
@@ -245,20 +258,26 @@ void returnHome(){
 
     for(int i = pathRecordLength-1; i >= 0; i--){
         if(pathRecord[i].command == "MOVE"){
-            Serial1.println("Next command is MOVE. Moving units - " + String(pathRecord[i].value));
+            // Serial1.println("Next command is MOVE. Moving units - " + String(pathRecord[i].value));
             autonomousMode(pathRecord[i].value,true);
         } else if(pathRecord[i].command == "TURN"){
-            Serial1.println("Next command is TURN. Turning units - " + String(-pathRecord[i].value));
+            // Serial1.println("Next command is TURN. Turning units - " + String(-pathRecord[i].value));
             turnZumo(-pathRecord[i].value);
         } else if(pathRecord[i].command == "ROOM"){
-            Serial1.println("Next command is ROOM. Going into room");
+            // Serial1.println("Next command is ROOM. Going into room");
             searchRoom(pathRecord[i].value * -1);
+            delay(500);
         }
+        delay(1000);
+
+        playReturnSound();
+
         // driveZumo(pathRecord[i].distance);
         // delay(3000);
         
     }
 
+    digitalWrite(13, LOW);    
+
     buzzer.play(">g32>>c32");
 }
-

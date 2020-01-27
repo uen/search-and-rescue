@@ -4,7 +4,7 @@
 #define SCAN_SIZE 80
 #define SCAN_SECTION 20
 #define ROOM_SEARCH_DISTANCE 250
-#define ROOM_BACK_DISTANCE 250
+#define ROOM_BACK_DISTANCE 220
 
 bool performScan(){
     proximity.read();
@@ -40,6 +40,9 @@ void searchRoom(int direction){
     // no change for both directions
     turnZumo(-SCAN_SIZE / 2, true);
     delay(100);
+
+
+    // Serial1.println("SEARCH ROOMSEARCH ROOM " + String(direction));
 
     bool objectFound = false;
     for(int i=0; i < SCAN_SIZE; i = i + SCAN_SECTION){

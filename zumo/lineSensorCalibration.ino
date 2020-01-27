@@ -2,9 +2,8 @@
 #include <Zumo32U4.h>
 
 void lineSensorCalibration(){
-    Serial1.println("zumo:Beginning calibration...#");
+    Serial1.println("Beginning calibration...");
     delay(100);
-    Serial1.println("state:Calibrating...#");
 
     // Set LED to yellow & play sound to indicate we are calibrating
     digitalWrite(13, HIGH);
@@ -28,9 +27,7 @@ void lineSensorCalibration(){
     motors.setSpeeds(0, 0);
 
     // Play sound & turn LED off to indicate calibration is complete
-    Serial1.println("zumo:Calibration complete.#");
-    delay(100);
-    Serial1.println("state:Idle#");
+    Serial1.println("Calibration complete.");
     
     digitalWrite(13, LOW);
     buzzer.play("L16 cdegreg4");

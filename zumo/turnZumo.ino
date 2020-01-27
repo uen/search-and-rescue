@@ -3,7 +3,7 @@
 
 // t junction
 #define DEGREE_MODIFIER 1 // Remove 10 degrees from the total degrees to turn. As the gyro is inaccurate
-#define TURN_SPEED 100
+#define TURN_SPEED 80
 
 void turnZumo(int degrees){
     turnZumo(degrees, false);
@@ -17,7 +17,9 @@ void turnZumo(int degrees, bool doNotStore){
 
     degrees = degrees * DEGREE_MODIFIER;
 
-    Serial1.println("zumo: Turning " + String(degrees));
+    // if(!doNotStore)
+        // Serial1.println("Turning " + String(degrees));
+
     
     motors.setSpeeds(TURN_SPEED * directionModifier, -TURN_SPEED * directionModifier);
   
@@ -47,6 +49,7 @@ void turnZumo(int degrees, bool doNotStore){
     }
 
     if(!doNotStore) recordTurn(degrees);
+    
     delay(100);
     
 

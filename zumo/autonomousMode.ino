@@ -3,7 +3,7 @@
 
 #define SENSOR_THRESHOLD 600
 
-#define FRONT_SENSOR_THRESHOLD 150
+#define FRONT_SENSOR_THRESHOLD 300
 #define SPEED 100
 #define TURN_MODIFIER 200
 
@@ -16,8 +16,6 @@ void autonomousMode(bool dontRecord){
 }
 
 void autonomousMode(int distance, bool dontRecord){
-    delay(500);
-    Serial1.println(String(String("zumo:Autonomous mode activated... with distance ") + String(distance)));
 
     // Set LED to yellow to indicate we are in autonomous mode
     digitalWrite(13, HIGH);
@@ -26,6 +24,10 @@ void autonomousMode(int distance, bool dontRecord){
     unsigned int sensors[6];
     int offset_from_center;
     int power_difference;
+
+    // if(distance > 0)
+        // Serial1.println("Moving forward with distance of:" + String(distance));
+
 
 
     int totalDistance = 0;
@@ -64,7 +66,7 @@ void autonomousMode(int distance, bool dontRecord){
         reflectanceSensors.readLine(sensors);
         if(sensors[1] > FRONT_SENSOR_THRESHOLD){
             motors.setSpeeds(0,0);
-            Serial1.println("zumo:Hit a wall. Please indicate direction. NEXT MESSAGE SHOULD BE DISTANCE");
+            Serial1.println("Hit a wall.");
             delay(100);
 
 

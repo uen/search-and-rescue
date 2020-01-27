@@ -49,8 +49,6 @@ void setup() {
 	
 	turnSensorSetup();
 
-	Serial.println("Initialized...");
-
 	// Yellow LED
 	pinMode(13, OUTPUT);
 
@@ -59,9 +57,8 @@ void setup() {
 
 	proximity.initFrontSensor();
 
-	Serial1.println("zumo:Initialized.");
+	Serial1.println("Initialized.");
 	delay(100);
-	Serial1.println("state:Idle");
 
 
 
