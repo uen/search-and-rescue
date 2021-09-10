@@ -1,5 +1,9 @@
 # Search and Rescue
-Programming 'things' assignment. A GUI and Zumo robot code to navigate cooridors and search rooms, and then return home autonomously. 
+Programming 'things' assignment for Sheffield Hallam University. A GUI and Zumo robot code to navigate cooridors and search rooms, and then return home autonomously.
+
+Feel free to steal.
+
+https://www.youtube.com/watch?v=L2vuAfGVpTY&t=68s
 
 ---
 
